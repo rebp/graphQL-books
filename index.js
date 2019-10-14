@@ -1,26 +1,29 @@
-const express = require("express");
-const graphqlHTTP = require("express-graphql");
-const schema = require("./schema/schema");
-const mongoose = require("mongoose");
+const express = require('express');
+const graphqlHTTP = require('express-graphql');
+const schema = require('./schema/schema');
+const mongoose = require('mongoose');
 
-const app = express();
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
 
 // connect to mlab database
 // make sure to replace my db string & creds with your own
-mongoose.connect("mongodb://rebp:rebp123@ds123963.mlab.com:23963/graphql");
-mongoose.connection.once("open", () => {
-  console.log("conneted to database");
+mongoose.connect('mongodb://rebp:rebp123@ds123963.mlab.com:23963/graphql');
+mongoose.connection.once('open', () => {
+	console.log('conneted to database');
 });
+
+const app = express();
 
 // bind express with graphql
 app.use(
-  "/graphql",
-  graphqlHTTP({
-    schema,
-    graphiql: true
-  })
+	'/graphql',
+	graphqlHTTP({
+		schema,
+		graphiql: true
+	})
 );
 
 app.listen(4000, () => {
-  console.log("now listening for requests on port 4000");
+	console.log('now listening for requests on port 4000');
 });
