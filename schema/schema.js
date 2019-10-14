@@ -110,7 +110,7 @@ const authorMutations = {
 			gender: { type: genderType }
 		},
 		async resolve(parent, args) {
-			const author = await Author.findById(args.id);
+			const author = await Author.findById(args.id).lean(true);
 
 			const updatedAuthor = {
 				name: !args.name ? author.name : args.name,
@@ -119,7 +119,10 @@ const authorMutations = {
 				gender: !args.gender ? author.gender : args.gender
 			};
 
-			return Author.findByIdAndUpdate(args.id, updatedAuthor, { new: true });
+			return Author.findOneAndUpdate({ _id: args.id }, updatedAuthor, {
+				new: true,
+				runValidators: true
+			});
 		}
 	},
 	deleteAuthor: {

@@ -7,11 +7,11 @@ const authorSchema = new Schema({
 	email: {
 		type: String,
 		required: true,
-		unique: true,
-		lowercase: true,
-		validate: value => {
-			return validator.isEmail(value);
-		}
+		validate: {
+			validator: value => validator.isEmail(value),
+			message: props => `${props.value} is not a valid e-mail address!`
+		},
+		unique: true
 	},
 	age: { type: String, required: false },
 	gender: { type: String, required: false }
