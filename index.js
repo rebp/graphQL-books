@@ -9,15 +9,16 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
 // connect to mlab database
-mongoose.connect('mongodb://mongo:27017/graphql');
-// mongoose.connect('mongodb://rebp:rebp123@ds123963.mlab.com:23963/graphql');
-mongoose.connection.once('open', () => {
-	console.log('conneted to database');
-});
+// mongoose.connect('mongodb://mongo:27017/graphql');
+
+// connect to mongoDB database
+mongoose
+	.connect('mongodb://rebp:rebp123@ds123963.mlab.com:23963/graphql')
+	.then(() => console.log('Connected to database'))
+	.catch(err => console.log(err));
 
 const app = express();
 
-// bind express with graphql
 app.use(
 	'/graphql',
 	graphqlHTTP({
