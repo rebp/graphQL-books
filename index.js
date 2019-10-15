@@ -9,8 +9,8 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
 // connect to mlab database
-// make sure to replace my db string & creds with your own
-mongoose.connect('mongodb://rebp:rebp123@ds123963.mlab.com:23963/graphql');
+mongoose.connect('mongodb://mongo:27017/graphql');
+// mongoose.connect('mongodb://rebp:rebp123@ds123963.mlab.com:23963/graphql');
 mongoose.connection.once('open', () => {
 	console.log('conneted to database');
 });

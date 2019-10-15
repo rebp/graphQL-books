@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 const Book = require('../models/book');
-const Author = require('../models/Author');
+const Author = require('../models/author');
 
 const {
 	GraphQLEnumType,
@@ -90,12 +90,16 @@ const authorMutations = {
 		type: AuthorType,
 		args: {
 			name: { type: new GraphQLNonNull(GraphQLString) },
-			age: { type: new GraphQLNonNull(GraphQLInt) }
+			email: { type: new GraphQLNonNull(GraphQLString) },
+			age: { type: GraphQLInt },
+			gender: { type: genderType }
 		},
 		resolve(parent, args) {
 			const author = new Author({
 				name: args.name,
-				age: args.age
+				email: args.email,
+				age: args.age,
+				gender: args.gender
 			});
 			return author.save();
 		}
@@ -110,26 +114,29 @@ const authorMutations = {
 			gender: { type: genderType }
 		},
 		async resolve(parent, args) {
-			const author = await Author.findById(args.id).lean(true);
+			try {
+				const author = await Author.findById(args.id).lean(true);
+				const updatedAuthor = {
+					name: !args.name ? author.name : args.name,
+					email: !args.email ? author.email : args.email,
+					age: !args.age ? author.age : args.age,
+					gender: !args.gender ? author.gender : args.gender
+				};
 
-			const updatedAuthor = {
-				name: !args.name ? author.name : args.name,
-				email: !args.email ? author.email : args.email,
-				age: !args.age ? author.age : args.age,
-				gender: !args.gender ? author.gender : args.gender
-			};
-
-			return Author.findOneAndUpdate({ _id: args.id }, updatedAuthor, {
-				new: true,
-				runValidators: true
-			});
+				return Author.findOneAndUpdate({ _id: args.id }, updatedAuthor, {
+					new: true,
+					runValidators: true
+				});
+			} catch (err) {
+				throw new Error(err);
+			}
 		}
 	},
 	deleteAuthor: {
 		type: AuthorType,
 		args: { id: { type: new GraphQLNonNull(GraphQLID) } },
 		resolve(parent, args) {
-			return Author.findOneAndDelete(args.id);
+			return Author.findOneAndDelete({ _id: args.id });
 		}
 	}
 };
